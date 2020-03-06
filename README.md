@@ -13,7 +13,7 @@ Description
 
 ## How to Run
 
-Add this line to your application's Gemfile:
+Run following command that will prompt for user input:
 
 ```ruby
 bin/toy_robot.rb

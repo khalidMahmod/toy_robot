@@ -6,7 +6,7 @@ require "toy_robot/version"
 Gem::Specification.new do |spec|
   spec.name          = "toy_robot"
   spec.version       = ToyRobot::VERSION
-  spec.authors       = ["Khalid Mahmod"]
+  spec.authors       = ["CCC1190"]
   spec.email         = ["ccc1190@gmail.com"]
 
   spec.summary       = "An easy Toy Robot Simulator"
@@ -37,6 +37,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "minitest", "~> 5.0"
 end

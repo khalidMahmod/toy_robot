@@ -18,4 +18,25 @@ class ToyRobotTest < Minitest::Test
   def test_takes_user_inputs
     assert ToyRobot.respond_to?(:main)
   end
+
+  def test_robot_moves_successfully
+    @robot.place('PLACE 0,0,NORTH')
+    @robot.process_command('MOVE')
+    assert_output(@robot.process_command('REPORT')) { '0,0,NORTH' }
+  end
+
+  def test_robot_turns_left_successfully
+    @robot.place('PLACE 0,0,NORTH')
+    @robot.process_command('LEFT')
+    assert_output(@robot.process_command('REPORT')) { '0,0,WEST' }
+  end
+
+  def test_robot_moves_and_turns_successfully
+    @robot.place('PLACE 1,2,EAST')
+    @robot.process_command('MOVE')
+    @robot.process_command('MOVE')
+    @robot.process_command('LEFT')
+    @robot.process_command('MOVE')
+    assert_output(@robot.process_command('REPORT')) { '3,3,NORTH' }
+  end
 end
