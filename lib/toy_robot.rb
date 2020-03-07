@@ -2,6 +2,7 @@ require_relative 'toy_robot/version'
 
 # ToyRobot Module that takes user input & Calls the Robot class to process
 module ToyRobot
+  # Table Boundaries
   START_BOUNDARY = 0
   END_BOUNDARY = 4
 
@@ -13,16 +14,16 @@ module ToyRobot
     west: { left: 'SOUTH', right: 'NORTH', direction: 'x', operator: '-' }
   }.freeze
 
+  # Delegates task to Robot class based on input
   def self.main
     robot = Robot.new
 
+    # Prompts for user input until "EXIT" command
     while (user_input = gets.chomp)
       robot.place(user_input) if user_input.include?('PLACE')
 
-      if robot.placed?
-        break if user_input == 'EXIT'
-        robot.process_command(user_input)
-      end
+      break if user_input == 'EXIT'
+      robot.process(user_input)
     end
   end
 
@@ -35,43 +36,71 @@ module ToyRobot
       @is_placed = is_placed
     end
 
+    # Check if Robot is placed on the table or not
     def placed?
       @is_placed
     end
 
-    def print_result
+    # Display position of the Robot
+    def report
       puts "#{@x},#{@y},#{@face}"
     end
 
     # @param [Object] input
-    def process_command(input)
-      case input
-      when 'LEFT', 'RIGHT'
-        @face = DIR_MAP[@face.downcase.to_sym][input.downcase.to_sym]
-      when 'MOVE'
-        direction = DIR_MAP[@face.downcase.to_sym][:direction]
-
-        position = eval('@' + direction + DIR_MAP[@face.downcase.to_sym][:operator] + '1')
-        if position.between?(START_BOUNDARY, END_BOUNDARY)
-          instance_variable_set("@#{DIR_MAP[@face.downcase.to_sym][:direction]}", position)
+    def process(input)
+      if placed?
+        case input
+        when 'LEFT', 'RIGHT'
+          turn(input)
+        when 'MOVE'
+          move
+        when 'REPORT'
+          report
         end
-      when 'REPORT'
-        print_result
       end
     end
 
+    # Place the robot on the table
     def place(input)
       position = input.split(' ')[1].split(',')
-      is_position_valid = [position[0], position[1]].all? do |n|
-        n.to_i.between?(START_BOUNDARY, END_BOUNDARY)
-      end
 
-      if is_position_valid
+      if is_valid?(position)
         @x = position[0].to_i
         @y = position[1].to_i
         @face = position[2]
         @is_placed = true
       end
+    end
+
+    # Move the Robot on the table
+    def move
+      direction = DIR_MAP[@face.downcase.to_sym][:direction]
+
+      position = eval('@' + direction + DIR_MAP[@face.downcase.to_sym][:operator] + '1')
+      if on_the_table?(position)
+        instance_variable_set("@#{direction}", position)
+      end
+    end
+
+    # Turn Left/Right
+    def turn(side)
+      @face = DIR_MAP[@face.downcase.to_sym][side.downcase.to_sym]
+    end
+
+    private
+
+    # @param [Object] position
+    def is_valid?(position)
+      is_valid_position = [position[0], position[1]].all? do |n|
+        on_the_table?(n.to_i)
+      end
+      is_valid_face = DIR_MAP.keys.map { |k| k.to_s.upcase! }.include? position[2]
+
+      is_valid_face && is_valid_position
+    end
+
+    def on_the_table?(position)
+      position.between?(START_BOUNDARY, END_BOUNDARY)
     end
   end
 end
