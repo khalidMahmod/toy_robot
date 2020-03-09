@@ -10,6 +10,7 @@ Description
   prevented from falling to destruction. Any movement that would result in the
   robot falling from the table must be prevented, however further valid
   movement commands must still be allowed.
+- I choose a behavioral design pattern. This simulation is a based on Strategy Design Pattern in a simplified manner.
 
 ## How to Run
 
@@ -33,6 +34,42 @@ The application can read in commands of the following (textual) form:
 ```ruby
 rake test
 ```
+
+Example Input and Output
+------------------------
+
+### Example a
+
+    PLACE 0,0,NORTH
+    MOVE
+    REPORT
+
+Expected output:
+
+    0,1,NORTH
+
+### Example b
+
+    PLACE 0,0,NORTH
+    LEFT
+    REPORT
+
+Expected output:
+
+    0,0,WEST
+
+### Example c
+
+    PLACE 1,2,EAST
+    MOVE
+    MOVE
+    LEFT
+    MOVE
+    REPORT
+
+Expected output
+
+    3,3,NORTH
 
 ## Contributing
 

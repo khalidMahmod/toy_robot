@@ -1,5 +1,6 @@
 require_relative 'toy_robot/version'
 
+##
 # ToyRobot Module that takes user input & Calls the Robot class to process
 module ToyRobot
   # Table Boundaries
@@ -20,14 +21,20 @@ module ToyRobot
 
     # Prompts for user input until "EXIT" command
     while (user_input = gets.chomp)
-      robot.place(user_input) if user_input.include?('PLACE')
+      if user_input.include?('PLACE')
+        # Check if valid Place command
+        regex = /^PLACE\s+\d+\s*,\s*\d+\s*,\s*(NORTH|SOUTH|EAST|WEST)$/
+        next unless !!(user_input =~ regex)
+        robot.place(user_input)
+      end
 
       break if user_input == 'EXIT'
       robot.process(user_input)
     end
   end
 
-  # Robot class that moves, turns left/right with command
+  ##
+  # Robot class that moves, turns left/right with user command
   class Robot
     def initialize(x = -1, y = -1, face = 'UNKNOWN', is_placed = false)
       @x = x
@@ -47,6 +54,7 @@ module ToyRobot
     end
 
     # @param [Object] input
+    # It processes the user input
     def process(input)
       if placed?
         case input
@@ -64,6 +72,7 @@ module ToyRobot
     def place(input)
       position = input.split(' ')[1].split(',')
 
+      # Check if valid?
       if is_valid?(position)
         @x = position[0].to_i
         @y = position[1].to_i
@@ -77,6 +86,8 @@ module ToyRobot
       direction = DIR_MAP[@face.downcase.to_sym][:direction]
 
       position = eval('@' + direction + DIR_MAP[@face.downcase.to_sym][:operator] + '1')
+
+      # Check if the position is on the table?
       if on_the_table?(position)
         instance_variable_set("@#{direction}", position)
       end
@@ -99,6 +110,7 @@ module ToyRobot
       is_valid_face && is_valid_position
     end
 
+    # A method that checks if a given position is on the table?
     def on_the_table?(position)
       position.between?(START_BOUNDARY, END_BOUNDARY)
     end
